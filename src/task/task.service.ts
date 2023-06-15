@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, BadRequestException } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -25,12 +25,23 @@ export class TaskService {
     return tasks;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} task`;
+  async findOne(id: number) {
+    const task = await this.taskRepository.findOne({
+      where:{id}});
+      if (!task){
+      throw new BadRequestException('Task not found');
+    }return task;
+      
   }
 
-  update(id: number, updateTaskDto: UpdateTaskDto) {
-    return `This action updates a #${id} task`;
+  async update(id: number, updateTask: UpdateTaskDto) {
+    await this.taskRepository.update(id, updateTask);
+    const task =  await this.taskRepository.findOne({
+      where: {id}});
+      if (!task){
+        throw new BadRequestException('Task not found, es que no existe');
+      }
+    return task;
   }
 
   remove(id: number) {
