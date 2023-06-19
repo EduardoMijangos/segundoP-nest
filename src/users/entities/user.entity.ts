@@ -26,6 +26,6 @@ export class User {
     @Column('text')
     sexo: string;
 
-    @Column('text')
-    edad: string;
+    @Column('int')
+    edad: number;
 }
