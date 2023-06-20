@@ -23,7 +23,7 @@ export class UsersService {
     return users;
   }
 
-   async findOne(id: number) {
+  async findOne(id: number) {
     const users = await this.userRepository.findOne(
       {where: {id}});
       if(!users){
@@ -31,11 +31,21 @@ export class UsersService {
       }return users;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUser: UpdateUserDto) {
+    const email = updateUser.email;
+    delete updateUser.email;
+    await this.userRepository.update(id, updateUser);
+    const user = await this.userRepository.findOne({
+      where: {id}});
+      if (!user){
+        throw new BadRequestException('Usuario no encontrado, nel no se puede');
+      }
+      delete user.email;
+      updateUser.email = email;
+      return user;
   }
 
   remove(id: number) {
-    return `This action removes a #${id} user`;
+    this.userRepository.delete(id);
   }
 }
