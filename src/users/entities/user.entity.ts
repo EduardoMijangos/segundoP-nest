@@ -14,18 +14,18 @@ export class User {
     @Column('text')
     apellidos: string;
 
-    @Column('text')
+    @Column('text',{unique: true})
     email: string;
 
-    @Column('text')
+    @Column('text', {select: false})
     passwoord: string;
     
-    @Column('bool', {default: false})
+    @Column('bool', {default: true})
     estate: boolean;
 
     @Column('text')
     sexo: string;
 
-    @Column('int')
+    @Column('int', {nullable: true})
     edad: number;
 }
