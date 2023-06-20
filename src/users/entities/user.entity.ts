@@ -18,7 +18,7 @@ export class User {
     email: string;
 
     @Column('text', {select: false})
-    passwoord: string;
+    password: string;
     
     @Column('bool', {default: true})
     estate: boolean;

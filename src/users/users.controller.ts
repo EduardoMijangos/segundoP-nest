@@ -2,15 +2,21 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, Validation
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { loginDto } from './dto/login.dto';
 
 @Controller('users')
 @UsePipes(new ValidationPipe())
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post('createUser')
+  @Post('register')
   create(@Body() createUser: CreateUserDto) {
     return this.usersService.create(createUser);
+  }
+
+  @Post('login')
+  login(@Body() user: loginDto){
+    return this.usersService.login(user);
   }
 
   @Get()

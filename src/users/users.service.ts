@@ -1,10 +1,12 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
-
+import { DeleteQueryBuilder, Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
+import { loginDto } from './dto/login.dto';
+import { of } from 'rxjs';
 @Injectable()
 export class UsersService {
 
@@ -13,10 +15,23 @@ export class UsersService {
   ){}
 
   async create(createUser: CreateUserDto) {
-    const users = this.userRepository.create(createUser);
-    await this.userRepository.save(users);
-    return users;
-  }
+      try {
+      const {password,...useData} = createUser;
+      const user = this.userRepository.create({
+      ...useData,
+        password:bcrypt.hashSync(password, 10)
+      });
+      await this.userRepository.save(user);
+      delete user.password;
+      return { ...user}
+      }
+      catch ([error]){
+      return error
+      }
+    }
+    //const users = this.userRepository.create(createUser);
+    //await this.userRepository.save(users);
+    //return users;
 
   findAll() {
     const users = this.userRepository.find();
@@ -47,5 +62,25 @@ export class UsersService {
 
   remove(id: number) {
     this.userRepository.delete(id);
+    return "Elimindado"
   }
+
+  async login(user: loginDto){
+    const {password, email} = user;
+    const userFind = await this.userRepository.findOne(
+      {
+        where: {email}, select: {password:true,edad:true,email:true,name:true,apellidos:true,estate:true}});
+    if(!userFind){
+      throw new UnauthorizedException('Intentale de nuevo mi bro');
+    }
+    if(!bcrypt.compareSync(password, userFind.password)){
+      throw new UnauthorizedException('Intentale de nuevo mi bro');
+    }
+    delete userFind.password;
+    return{
+      ...userFind
+    }
+  }
+
 }
+
