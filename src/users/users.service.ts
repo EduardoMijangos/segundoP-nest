@@ -42,7 +42,7 @@ export class UsersService {
     const users = await this.userRepository.findOne(
       {where: {id}});
       if(!users){
-        throw new BadRequestException('Usuario no encontrado');
+        throw new BadRequestException('No estas aqui mi pana');
       }return users;
   }
 
@@ -53,7 +53,7 @@ export class UsersService {
     const user = await this.userRepository.findOne({
       where: {id}});
       if (!user){
-        throw new BadRequestException('Usuario no encontrado, nel no se puede');
+        throw new BadRequestException('Nel no se puede');
       }
       delete user.email;
       updateUser.email = email;
@@ -62,7 +62,7 @@ export class UsersService {
 
   remove(id: number) {
     this.userRepository.delete(id);
-    return "Elimindado"
+    return "Eliminado"
   }
 
   async login(user: loginDto){
