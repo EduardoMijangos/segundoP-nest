@@ -6,12 +6,14 @@ import { User } from './entities/user.entity';
 import { DeleteQueryBuilder, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { loginDto } from './dto/login.dto';
-import { of } from 'rxjs';
+import { JwtService } from '@nestjs/jwt';
+
 @Injectable()
 export class UsersService {
 
   constructor(
-    @InjectRepository(User) private userRepository:Repository<User>
+    @InjectRepository(User) private userRepository:Repository<User>,
+    private jwts: JwtService
   ){}
 
   async create(createUser: CreateUserDto) {
@@ -78,8 +80,14 @@ export class UsersService {
     }
     delete userFind.password;
     return{
-      ...userFind
+      ...userFind,
+      token:this.getJwToken({id:userFind.id, name:userFind.name, apellidos: userFind.apellidos})
     }
+  }
+
+  private getJwToken(payload:{id:number, name:string, apellidos:string}){
+    const token = this.jwts.sign(payload);
+    return token;
   }
 
 }
