@@ -1,18 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes,ValidationPipe, Query } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+
 
 @Controller('task')
 @UsePipes(new ValidationPipe())
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
-  @Get('search')
-  search(@Query('termino') termino: string) {
-    return this.taskService.search(termino);
-  }
-  
   @Post('createTask')
   create(@Body() createTask: CreateTaskDto) {
     return this.taskService.create(createTask);
@@ -28,6 +24,10 @@ export class TaskController {
     return this.taskService.findOne(+id);
   }
 
+  @Get('imp/:important')
+  buscarimpor(@Param('important') important: number){
+    return this.taskService.buscarimpor(+important);
+  }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
@@ -37,5 +37,10 @@ export class TaskController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.taskService.remove(+id);
+  }
+
+  @Get('search')
+  search(@Query('termino')termino: string){
+    return this.taskService.search(termino);
   }
 }

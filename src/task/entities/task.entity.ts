@@ -1,24 +1,23 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { User } from "src/user/entities/user.entity";
 @Entity('task')
-
-
 export class Task {
 
-@PrimaryGeneratedColumn()
-id: number;
+    @PrimaryGeneratedColumn()
+    id: number
 
-@Column('text')
-title: string;
+    @Column('text')
+    title: string
 
-@Column('text')
-description: string;
+    @Column('text')
+    description:  string
+    
+    @Column('bool', {default:false})
+    estate:  boolean
 
-@Column('bool',{default: false})
-estate: boolean
+    @Column()
+    important:  number
 
-@Column()
-important: number;
+    @ManyToOne(()=>User,(u)=>u.tasks)
+    user: User;
 }
-
-
