@@ -9,11 +9,12 @@ import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dto/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
 
+
 @Injectable()
 export class UserService {
   constructor(
+    private jwtS:JwtService,
     @InjectRepository(User)private userRepository: Repository<User>) {}
-    private jwtS:JwtService
 
     
     async create(createUser: CreateUserDto) {
@@ -83,5 +84,15 @@ export class UserService {
   private getJWToken(payload:{id:number, nombre:string, apellidos:string}){
     const token = this.jwtS.sign(payload);
     return token;
+  }
+
+  validaToken(token: any){
+    try{
+      this.jwtS.verify(token.token, {secret: 'secretWord'});
+      return true;
+    }
+    catch(error){
+      throw new UnauthorizedException('Token no valido')
+    }
   }
 }

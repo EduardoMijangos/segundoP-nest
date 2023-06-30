@@ -19,6 +19,10 @@ export class UserController {
     return this.userService.login(user);
   } 
   
+  @Post('validaToken')
+  validaToken(@Body() token:any){
+    return this.userService.validaToken(token)
+  }
 
   @Get()
   findAll() {
