@@ -33,6 +33,18 @@ export class TaskService {
     return tasks;
   }
 
+  findByUser(idUser: string){
+    const tasks = this.taskRepository.find(
+      {
+        where:{user:{email: idUser}}
+      }
+    );
+    if(!tasks){
+      throw new BadRequestException("task" + idUser + " not found");
+    }
+    return tasks;
+  }
+
   async findOne(id: number) {
     const task = await this.taskRepository.findOne({where:{id}});
     if (!task) {throw new BadRequestException("Task not found")};
